@@ -2,346 +2,166 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>생각의 바다 - 취향 주제 뽑기 (Lite)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>생각의 바다 친바조</title>
   <style>
     :root{
-      --bg:#f7f8fa; --card:#ffffff; --text:#1f2937; --muted:#6b7280;
-      --primary:#2563eb; --primary-hover:#1e40af; --danger:#ef4444;
+      --bg:#0b1020; /* deep navy */
+      --card:#121830; /* card bg */
+      --ink:#e9ecf5; /* text */
+      --muted:#a7b0c6;
+      --accent:#7aa2ff;
+      --accent2:#8affd3;
+      --e:#1f875c;   /* E color */
+      --i:#6b2b8e;   /* I color */
+      --border: rgba(255,255,255,0.08);
     }
     *{box-sizing:border-box}
-    body{margin:0; padding:18px; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text)}
-    h1{margin:0 0 8px; font-size:1.6rem}
-    .sub{color:var(--muted); margin-bottom:14px}
-    .wrap{max-width:900px; margin:0 auto}
-
-    .toolbar,.card,.footer{
-      background:var(--card); border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,.06); padding:12px;
+    html,body{height:100%}
+    body{
+      margin:0; background: radial-gradient(1200px 800px at 10% -10%, #1a2548, transparent), var(--bg);
+      color:var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     }
-    .toolbar{
-      position:sticky; top:8px; z-index:5;
-      display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    .wrap{max-width:1100px; margin:48px auto; padding:0 20px 60px}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px}
+    h1{font-size:28px; letter-spacing:0.5px; margin:0; display:flex; align-items:center; gap:10px}
+    h1 .chip{font-size:12px; padding:4px 8px; border-radius:999px; background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#0b1020; font-weight:700}
+    .actions{display:flex; gap:10px}
+    button{
+      border:1px solid var(--border);
+      background:#141b36; color:var(--ink); padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:700;
+      transition:.2s transform ease, .2s background ease, .2s border-color ease;
     }
-    select,button{
-      padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px; background:#fff; color:var(--text); font-size:.95rem;
+    button:hover{transform:translateY(-1px); background:#182247; border-color:rgba(255,255,255,.15)}
+
+    #board{display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-top:18px}
+    @media (max-width:1024px){#board{grid-template-columns:1fr}}
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0));
+      border:1px solid var(--border); border-radius:16px; padding:16px 14px 12px; position:relative; overflow:hidden;
     }
-    button{background:var(--primary); color:#fff; border:none; cursor:pointer}
-    button:hover{background:var(--primary-hover)}
-    button.danger{background:var(--danger)}
-    .count{margin-left:auto; color:var(--muted); font-size:.95rem}
+    .card::after{content:""; position:absolute; inset:0; pointer-events:none; background:radial-gradient(400px 200px at 100% -20%, rgba(122,162,255,.12), transparent)}
+    .card h2{margin:2px 0 12px; font-size:18px; letter-spacing:.2px}
+    .lead{color:var(--muted); font-weight:600; font-size:13px}
 
-    .card{margin-top:12px}
-    .question-box{
-      min-height:96px; display:flex; align-items:center; justify-content:center;
-      text-align:center; border:2px dashed #e5e7eb; border-radius:12px;
-      padding:16px; line-height:1.5; font-size:clamp(1rem,4.8vw,1.3rem);
+    .list{display:grid; grid-template-columns: 1fr; gap:8px}
+    .row{
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      background:rgba(255,255,255,0.02); border:1px solid var(--border); border-radius:12px; padding:10px 12px;
     }
-    .meta{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; color:#111827}
-    .badge{background:#eef2ff; color:#1e3a8a; padding:4px 8px; border-radius:999px; font-weight:600; font-size:.9rem}
-    .status{margin-top:6px; color:var(--muted); min-height:20px; font-size:.95rem}
+    .left{display:flex; align-items:center; gap:10px; min-width:0}
+    .name{font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+    .gender{font-size:12px; color:var(--muted); padding:2px 8px; border:1px solid var(--border); border-radius:999px}
 
-    .footer{margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; align-items:center}
-    .spacer{flex:1}
-
-    .list-card{margin-top:12px}
-    .list h4{margin:12px 0 6px}
-    .list ul{margin:0; padding-left:18px}
-    .list li{margin:4px 0; color:#374151}
-
-    /* Mobile polish */
-    @media (max-width:520px){
-      body{padding:14px}
-      h1{font-size:1.35rem}
-      .toolbar select, .toolbar button{width:100%}
-      .count{width:100%; text-align:right}
-      button, select{font-size:16px} /* iOS 확대 방지 */
+    .badges{display:flex; align-items:center; gap:8px}
+    .mbti, .ei{
+      font-size:12px; font-weight:800; padding:4px 8px; border-radius:999px; border:1px solid var(--border);
+      letter-spacing:0.4px; text-transform:uppercase;
     }
+    .ei.e{background:rgba(138,255,211,.12); border-color:rgba(138,255,211,.35); color:var(--accent2)}
+    .ei.i{background:rgba(122,162,255,.10); border-color:rgba(122,162,255,.35); color:var(--accent)}
+
+    footer{margin-top:18px; color:var(--muted); font-size:12px}
+    .tip{opacity:.9}
   </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>🎙️ 내 취향을 소개합니다 — 주제 뽑기</h1>
-  <div class="sub">질문 패스해도 된다고 꼭 안내해주세요.</div>
+  <div class="wrap">
+    <header>
+      <h1>생각의 바다 친바조 <span class="chip">MBTI · 성별 정리</span></h1>
+      <div class="actions">
+        <button id="downloadPngBtn" title="현재 배치도를 PNG로 저장">PNG로 저장</button>
+      </div>
+    </header>
 
-  <!-- Controls -->
-  <div class="toolbar" role="region" aria-label="controls">
-    <label for="category" class="sr-only">카테고리</label>
-    <select id="category">
-      <option value="ALL">전체 카테고리</option>
-    </select>
-    <button id="btnPick">🎲 주제 뽑기</button>
-    <button id="btnToggleList" type="button">전체 목록 토글</button>
-    <div class="count" id="count">0 / 0</div>
+    <div id="board" aria-label="친바조 배치도">
+      <!-- 1조 -->
+      <section class="card" id="group1">
+        <h2>1조 <span class="lead">— 조장: 유승빈</span></h2>
+        <div class="list">
+          <!-- name, gender, mbti -->
+          <div class="row" data-mbti="ENFJ" data-gender="남"><div class="left"><div class="name">유승빈</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ENFJ</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ESTJ" data-gender="여"><div class="left"><div class="name">강윤지</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ESTJ</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ENTJ" data-gender="여"><div class="left"><div class="name">최연우</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ENTJ</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="INFJ" data-gender="여"><div class="left"><div class="name">박유정</div><div class="gender">여</div></div><div class="badges"><span class="mbti">INFJ</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="INTP" data-gender="남"><div class="left"><div class="name">권동국</div><div class="gender">남</div></div><div class="badges"><span class="mbti">INTP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ISFP" data-gender="남"><div class="left"><div class="name">최민규</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ISFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ISFP" data-gender="남"><div class="left"><div class="name">오승빈</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ISFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ISTJ" data-gender="여"><div class="left"><div class="name">최유리</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ISTJ</span><span class="ei">I</span></div></div>
+        </div>
+      </section>
+
+      <!-- 2조 -->
+      <section class="card" id="group2">
+        <h2>2조 <span class="lead">— 조장: 최승아</span></h2>
+        <div class="list">
+          <div class="row" data-mbti="INTP" data-gender="여"><div class="left"><div class="name">최승아</div><div class="gender">여</div></div><div class="badges"><span class="mbti">INTP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ISFP" data-gender="남"><div class="left"><div class="name">조장원</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ISFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ENTJ" data-gender="남"><div class="left"><div class="name">신재민</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ENTJ</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ESTP" data-gender="남"><div class="left"><div class="name">변서호</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ESTP</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ISFP" data-gender="여"><div class="left"><div class="name">이명비</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ISFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="INFJ" data-gender="남"><div class="left"><div class="name">김현기</div><div class="gender">남</div></div><div class="badges"><span class="mbti">INFJ</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ISFP" data-gender="남"><div class="left"><div class="name">정민재</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ISFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ENTP" data-gender="여"><div class="left"><div class="name">박하은</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ENTP</span><span class="ei">E</span></div></div>
+        </div>
+      </section>
+
+      <!-- 3조 -->
+      <section class="card" id="group3">
+        <h2>3조 <span class="lead">— 조장: 강산</span></h2>
+        <div class="list">
+          <div class="row" data-mbti="CUTE" data-gender="남"><div class="left"><div class="name">강산</div><div class="gender">남</div></div><div class="badges"><span class="mbti">CUTE</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ENTP" data-gender="남"><div class="left"><div class="name">이종화</div><div class="gender">남</div></div><div class="badges"><span class="mbti">ENTP</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ESFP" data-gender="여"><div class="left"><div class="name">이주은</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ESFP</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="INTP" data-gender="남"><div class="left"><div class="name">배승정</div><div class="gender">남</div></div><div class="badges"><span class="mbti">INTP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="INFP" data-gender="남"><div class="left"><div class="name">정용진</div><div class="gender">남</div></div><div class="badges"><span class="mbti">INFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="INFP" data-gender="남"><div class="left"><div class="name">김환희</div><div class="gender">남</div></div><div class="badges"><span class="mbti">INFP</span><span class="ei">I</span></div></div>
+          <div class="row" data-mbti="ESTP" data-gender="여"><div class="left"><div class="name">최지은</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ESTP</span><span class="ei">E</span></div></div>
+          <div class="row" data-mbti="ISTP" data-gender="여"><div class="left"><div class="name">안나연</div><div class="gender">여</div></div><div class="badges"><span class="mbti">ISTP</span><span class="ei">I</span></div></div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p class="tip">Tip: 이름 순서 바꾸고 싶으면 각 줄(<code>.row</code>)을 드래그&드롭하는 스크립트도 추가해줄 수 있어요. 필요하면 말해줘요! 😊</p>
+    </footer>
   </div>
 
-  <!-- Current -->
-  <section class="card" aria-live="polite">
-    <div class="question-box" id="questionBox">버튼을 눌러 취향 주제를 뽑아보세요!</div>
-    <div class="meta">
-      <span class="badge" id="currentCategory">카테고리: -</span>
-      <span class="badge" id="subcount">진행: 0 / 0</span>
-    </div>
-    <div class="status" id="status"></div>
-    <div class="footer">
-      <button id="btnResetCat" type="button">현재 카테고리 초기화</button>
-      <div class="spacer"></div>
-      <button id="btnResetAll" class="danger" type="button">전체 초기화</button>
-    </div>
-  </section>
+  <!-- html2canvas CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script>
+    // Apply E/I pill styles automatically from MBTI text
+    document.querySelectorAll('.row').forEach(r=>{
+      const mbti = r.dataset.mbti || '';
+      const eiSpan = r.querySelector('.ei');
+      // Determine E/I from first letter; special-case CUTE -> E
+      const letter = (mbti && mbti[0]) ? mbti[0].toUpperCase() : 'E';
+      const ei = (letter === 'I') ? 'I' : 'E';
+      eiSpan.textContent = ei;
+      eiSpan.classList.add(ei.toLowerCase());
+    });
 
-  <!-- All list -->
-  <section class="card list-card" id="allList" style="display:none">
-    <h3>📋 모든 주제 (카테고리별)</h3>
-    <div class="list" id="listContainer"></div>
-  </section>
-</div>
+    // Download board as PNG
+    const btn = document.getElementById('downloadPngBtn');
+    btn.addEventListener('click', async ()=>{
+      const node = document.getElementById('board');
+      // temporarily lift card borders for crisper export (optional)
+      const oldTransform = document.body.style.transform;
+      document.body.style.transform = 'scale(1)';
 
-<!-- accessibility helper -->
-<style>.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);border:0}</style>
-
-<script>
-/* =========================
-   데이터 정의 (게임·앱/툴 제외)
-========================= */
-const TOPICS = {
-  "음식": [
-    "내 인생 메뉴 1가지 + 추천 식당",
-    "다이어트 때 버티는 메뉴",
-    "비 오는 날 최애 음식",
-  ],
-  "카페/디저트": [
-    "내 취향 카페 인테리어/분위기",
-    "카공하기 좋은 카페 추천",
-    "좋아하는 라떼/음료",
-    "나만 아는 동네 카페",
-  ],
-  "음악": [
-    "요즘 듣는 노래 1곡 + 한줄 추천",
-    "운동/집중/산책 플레이리스트",
-    "아침에 듣기 좋은 노래",
-    "밤에 듣기 좋은 노래",
-  ],
-  "영화/드라마": [
-    "인생 영화 1편 + 이유",
-    "최근 몰아본 드라마 추천",
-    "OST가 미친 작품",
-    "반전이 좋은 작품",
-    "힐링이 필요할 때 보는 작품",
-  ],
- 
-  "여행": [
-    "내가 사랑한 도시 + 이유",
-    "힐링이 필요할 때 가는 장소",
-    "비 오는 날 좋은 여행 코스",
-    "혼자 가도 좋은 여행지",
-    "가보고 싶은 여행지",
-  ],
-  
-  "인생 경험": [
-    "내 인생에서 가장 인상 깊은 순간",
-    "나만의 전환점이 된 경험",
-    "꼭 다시 해보고 싶은 경험",
-    "요즘 자주 드는 생각",
-    "요즘 나를 웃게 한 소소한 순간",
-    "지친 날 회복하는 나만의 방법",
-    "내가 제일 좋아하는 하루의 시간대",
-    ],
-};
-
-/* =========================
-   상태 & 요소
-========================= */
-const STORAGE_KEY = "seangbal_taste_lite_v1";
-let used = new Set(); // "카테고리|문장" 키
-let current = null;
-
-const elCategory = document.querySelector("#category");
-const elQuestion = document.querySelector("#questionBox");
-const elCount = document.querySelector("#count");
-const elSubCount = document.querySelector("#subcount");
-const elCurrentCat = document.querySelector("#currentCategory");
-const elStatus = document.querySelector("#status");
-const elAllList = document.querySelector("#allList");
-const elListContainer = document.querySelector("#listContainer");
-
-const btnPick = document.querySelector("#btnPick");
-const btnToggleList = document.querySelector("#btnToggleList");
-const btnResetCat = document.querySelector("#btnResetCat");
-const btnResetAll = document.querySelector("#btnResetAll");
-
-/* =========================
-   초기화
-========================= */
-init();
-
-function init(){
-  // 카테고리 옵션
-  for(const cat of Object.keys(TOPICS)){
-    const opt = document.createElement("option");
-    opt.value = cat; opt.textContent = cat;
-    elCategory.appendChild(opt);
-  }
-  // 로컬스토리지 복원
-  const saved = loadState();
-  if(saved){ used = new Set(saved.used || []); }
-
-  updateCounts();
-  renderAllList();
-  setStatus("준비 완료. 취향 주제를 뽑아보세요!");
-  selfValidateData();
-}
-
-/* =========================
-   스토리지
-========================= */
-function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify({ used:[...used] })); }
-function loadState(){
-  try{ const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : null; }
-  catch(e){ return null; }
-}
-
-/* =========================
-   유틸/렌더
-========================= */
-function keyOf(cat, text){ return `${cat}|${text}`; }
-function totalCount(){ return Object.values(TOPICS).reduce((a,arr)=>a+arr.length,0); }
-function usedCount(){ return used.size; }
-function subCount(cat){
-  if(cat==="ALL") return { used: usedCount(), total: totalCount() };
-  const total = TOPICS[cat].length;
-  const usedInCat = [...used].filter(k => k.startsWith(cat+"|")).length;
-  return { used: usedInCat, total };
-}
-function updateCounts(){
-  elCount.textContent = `${usedCount()} / ${totalCount()}`;
-  const cat = elCategory.value || "ALL";
-  const sc = subCount(cat);
-  elSubCount.textContent = `진행: ${sc.used} / ${sc.total}`;
-}
-function updateCurrentUI(item){
-  if(!item){
-    elQuestion.textContent = "버튼을 눌러 취향 주제를 뽑아보세요!";
-    elCurrentCat.textContent = "카테고리: -";
-    return;
-  }
-  elQuestion.textContent = item.text;
-  elCurrentCat.textContent = `카테고리: ${item.cat}`;
-}
-function setStatus(msg){ elStatus.textContent = msg || ""; }
-
-function renderAllList(){
-  elListContainer.innerHTML = "";
-  for(const [cat, arr] of Object.entries(TOPICS)){
-    const h = document.createElement("h4"); h.textContent = cat;
-    const ul = document.createElement("ul");
-    for(const text of arr){
-      const li = document.createElement("li");
-      const usedMark = used.has(keyOf(cat,text)) ? " (사용됨)" : "";
-      li.textContent = `${text}${usedMark}`;
-      ul.appendChild(li);
-    }
-    elListContainer.appendChild(h);
-    elListContainer.appendChild(ul);
-  }
-}
-
-/* =========================
-   추첨
-========================= */
-function availablePool(cat){
-  const pool = [];
-  const cats = (cat==="ALL") ? Object.keys(TOPICS) : [cat];
-  for(const c of cats){
-    for(const text of TOPICS[c]){
-      if(!used.has(keyOf(c,text))) pool.push({cat:c, text});
-    }
-  }
-  return pool;
-}
-function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
-
-function pickTopic(){
-  const cat = elCategory.value;
-  let pool = availablePool(cat);
-
-  if(pool.length === 0){
-    if(cat !== "ALL"){
-      // 선택 카테고리 소진 시 전체에서 폴백
-      pool = availablePool("ALL");
-      if(pool.length === 0){
-        setStatus("모든 주제를 소진했습니다. 초기화가 필요해요.");
-        return;
-      } else {
-        setStatus("선택한 카테고리 소진 → 전체에서 추첨합니다.");
-      }
-    } else {
-      setStatus("모든 주제를 소진했습니다. 초기화가 필요해요.");
-      return;
-    }
-  }
-
-  const item = pickRandom(pool);
-  current = item;
-  used.add(keyOf(item.cat, item.text));
-  saveState();
-
-  updateCounts();
-  updateCurrentUI(item);
-  renderAllList();
-  setStatus("추첨 완료!");
-}
-
-/* =========================
-   초기화 & 토글
-========================= */
-function resetCategory(){
-  const cat = elCategory.value;
-  if(cat === "ALL"){ setStatus("카테고리를 선택한 뒤 실행하세요."); return; }
-  let cnt = 0;
-  for(const k of [...used]){
-    if(k.startsWith(cat+"|")){ used.delete(k); cnt++; }
-  }
-  saveState(); updateCounts(); renderAllList(); setStatus(`${cat} 초기화: ${cnt}개 해제`);
-}
-function resetAll(){
-  used = new Set(); current = null;
-  saveState(); updateCounts(); renderAllList(); updateCurrentUI(null);
-  setStatus("전체 초기화 완료");
-}
-function toggleList(){
-  const show = elAllList.style.display === "none";
-  elAllList.style.display = show ? "block" : "none";
-  document.querySelector("#btnToggleList").textContent = show ? "전체 목록 숨기기" : "전체 목록 토글";
-}
-
-/* =========================
-   데이터 자가 검증
-========================= */
-function selfValidateData(){
-  const seen = new Set(); let dup = [];
-  for(const [cat, arr] of Object.entries(TOPICS)){
-    for(const text of arr){
-      const k = keyOf(cat,text);
-      if(seen.has(k)) dup.push(k);
-      seen.add(k);
-    }
-  }
-  const invalidUsed = [...used].filter(k => !seen.has(k));
-  if(invalidUsed.length){ for(const k of invalidUsed) used.delete(k); saveState(); }
-  console.log("[검증] 총 항목:", seen.size, "| 중복:", dup.length, "| 유효하지 않은 used 제거:", invalidUsed.length);
-}
-
-/* =========================
-   이벤트
-========================= */
-btnPick.addEventListener("click", pickTopic);
-btnToggleList.addEventListener("click", toggleList);
-btnResetCat.addEventListener("click", resetCategory);
-btnResetAll.addEventListener("click", resetAll);
-elCategory.addEventListener("change", ()=>{ updateCounts(); setStatus("카테고리 변경됨."); });
-
-// Enter로 빠른 뽑기
-document.addEventListener("keydown", e=>{ if(e.key==="Enter") pickTopic(); });
-</script>
+      const canvas = await html2canvas(node, {backgroundColor: '#0b1020', scale: 2, useCORS: true});
+      const dataURL = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      const today = new Date();
+      const y = today.getFullYear();
+      const m = (today.getMonth()+1).toString().padStart(2,'0');
+      const d = today.getDate().toString().padStart(2,'0');
+      a.href = dataURL;
+      a.download = `생각의바다_친바조_${y}-${m}-${d}.png`;
+      a.click();
+      document.body.style.transform = oldTransform;
+    });
+  </script>
 </body>
 </html>
