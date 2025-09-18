@@ -6,14 +6,7 @@
   <title>생각의 바다 친바조</title>
   <style>
     :root{
-      --bg:#ffffff;
-      --ink:#1b1f24;
-      --muted:#667085;
-      --line:#E5E7EB;
-      --card:#ffffff;
-      --brand:#111827;
-      --e:#10B981;
-      --i:#3B82F6;
+      --bg:#ffffff; --ink:#1b1f24; --muted:#667085; --line:#E5E7EB; --card:#ffffff; --brand:#111827; --e:#10B981; --i:#3B82F6;
     }
     *,*::before,*::after{box-sizing:border-box}
     body{margin:0; background:var(--bg); color:var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Noto Sans KR', sans-serif;}
@@ -24,19 +17,23 @@
     .subtitle{margin:6px 0 0; color:var(--muted); font-size:13px}
     button{border:1px solid var(--line); background:#f9fafb; color:var(--ink); padding:8px 14px; border-radius:8px; font-weight:700; cursor:pointer}
 
-    /* Board horizontally */
-    #board{display:flex; flex-direction:row; gap:16px; justify-content:center;}
+    /* Horizontal board with safe overflow */
+    #boardScroll{overflow-x:auto; padding-bottom:6px}
+    #board{display:flex; flex-direction:row; gap:16px; justify-content:center; min-width:980px}
+
     .card{flex:1; min-width:300px; background:var(--card); border:1px solid var(--line); border-radius:14px; overflow:hidden}
-    .card header{padding:12px 14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between;}
+    .card header{padding:12px 14px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between}
     .card h2{margin:0; font-size:18px}
     .lead{color:var(--muted); font-size:12px}
+
     .table{width:100%; border-collapse:collapse}
     .table th{font-size:12px; text-align:left; color:var(--muted); padding:6px 8px; border-bottom:1px solid var(--line)}
     .table td{padding:6px 8px; border-bottom:1px solid var(--line); font-size:13px}
     .table tr:last-child td{border-bottom:none}
-    .pill{font-size:11px; font-weight:700; padding:2px 6px; border-radius:999px;}
+    .pill{font-size:11px; font-weight:700; padding:2px 6px; border-radius:999px}
     .pill.e{color:#065F46; background:rgba(16,185,129,.1)}
     .pill.i{color:#1E40AF; background:rgba(59,130,246,.1)}
+
     footer{margin-top:14px; color:var(--muted); font-size:12px; text-align:center}
   </style>
 </head>
@@ -45,74 +42,77 @@
     <header>
       <div>
         <h1>생각의 바다 친바조</h1>
-        <p class="subtitle">조원 명단 (가로 배치)</p>
+        <p class="subtitle">조원 명단 (가로 배치 · PNG 저장 시 자동 세로 합치기)</p>
       </div>
       <button id="downloadPngBtn">PNG로 저장</button>
     </header>
 
-    <div id="board">
-      <!-- 1조 -->
-      <section class="card" id="group1">
-        <header><h2>1조</h2><span class="lead">조장: 유승빈</span></header>
-        <table class="table">
-          <thead><tr><th>이름</th><th>성별</th><th>MBTI</th><th>E/I</th></tr></thead>
-          <tbody>
-            <tr class="row" data-mbti="ENFJ"><td>유승빈</td><td>남</td><td>ENFJ</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ESTJ"><td>강윤지</td><td>여</td><td>ESTJ</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ENTJ"><td>최연우</td><td>여</td><td>ENTJ</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="INFJ"><td>박유정</td><td>여</td><td>INFJ</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="INTP"><td>권동국</td><td>남</td><td>INTP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISFP"><td>최민규</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISFP"><td>오승빈</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISTJ"><td>최유리</td><td>여</td><td>ISTJ</td><td class="ei"></td></tr>
-          </tbody>
-        </table>
-      </section>
+    <div id="boardScroll">
+      <div id="board">
+        <!-- 1조 -->
+        <section class="card" id="group1">
+          <header><h2>1조</h2><span class="lead">조장: 유승빈</span></header>
+          <table class="table">
+            <thead><tr><th>이름</th><th>성별</th><th>MBTI</th><th>E/I</th></tr></thead>
+            <tbody>
+              <tr class="row" data-mbti="ENFJ"><td>유승빈</td><td>남</td><td>ENFJ</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ESTJ"><td>강윤지</td><td>여</td><td>ESTJ</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ENTJ"><td>최연우</td><td>여</td><td>ENTJ</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="INFJ"><td>박유정</td><td>여</td><td>INFJ</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="INTP"><td>권동국</td><td>남</td><td>INTP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISFP"><td>최민규</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISFP"><td>오승빈</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISTJ"><td>최유리</td><td>여</td><td>ISTJ</td><td class="ei"></td></tr>
+            </tbody>
+          </table>
+        </section>
 
-      <!-- 2조 -->
-      <section class="card" id="group2">
-        <header><h2>2조</h2><span class="lead">조장: 최승아</span></header>
-        <table class="table">
-          <thead><tr><th>이름</th><th>성별</th><th>MBTI</th><th>E/I</th></tr></thead>
-          <tbody>
-            <tr class="row" data-mbti="INTP"><td>최승아</td><td>여</td><td>INTP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISFP"><td>조장원</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ENTJ"><td>신재민</td><td>남</td><td>ENTJ</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ESTP"><td>변서호</td><td>남</td><td>ESTP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISFP"><td>이명비</td><td>여</td><td>ISFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="INFJ"><td>김현기</td><td>남</td><td>INFJ</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISFP"><td>정민재</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ENTP"><td>박하은</td><td>여</td><td>ENTP</td><td class="ei"></td></tr>
-          </tbody>
-        </table>
-      </section>
+        <!-- 2조 -->
+        <section class="card" id="group2">
+          <header><h2>2조</h2><span class="lead">조장: 최승아</span></header>
+          <table class="table">
+            <thead><tr><th>이름</th><th>성별</th><th>MBTI</th><th>E/I</th></tr></thead>
+            <tbody>
+              <tr class="row" data-mbti="INTP"><td>최승아</td><td>여</td><td>INTP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISFP"><td>조장원</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ENTJ"><td>신재민</td><td>남</td><td>ENTJ</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ESTP"><td>변서호</td><td>남</td><td>ESTP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISFP"><td>이명비</td><td>여</td><td>ISFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="INFJ"><td>김현기</td><td>남</td><td>INFJ</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISFP"><td>정민재</td><td>남</td><td>ISFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ENTP"><td>박하은</td><td>여</td><td>ENTP</td><td class="ei"></td></tr>
+            </tbody>
+          </table>
+        </section>
 
-      <!-- 3조 -->
-      <section class="card" id="group3">
-        <header><h2>3조</h2><span class="lead">조장: 강산</span></header>
-        <table class="table">
-          <thead><tr><th>이름</th><th>성별</th><th>MBTI</th><th>E/I</th></tr></thead>
-          <tbody>
-            <tr class="row" data-mbti="CUTE"><td>강산</td><td>남</td><td>CUTE</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ENTP"><td>이종화</td><td>남</td><td>ENTP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ESFP"><td>이주은</td><td>여</td><td>ESFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="INTP"><td>배승정</td><td>남</td><td>INTP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="INFP"><td>정용진</td><td>남</td><td>INFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="INFP"><td>김환희</td><td>남</td><td>INFP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ESTP"><td>최지은</td><td>여</td><td>ESTP</td><td class="ei"></td></tr>
-            <tr class="row" data-mbti="ISTP"><td>안나연</td><td>여</td><td>ISTP</td><td class="ei"></td></tr>
-          </tbody>
-        </table>
-      </section>
+        <!-- 3조 -->
+        <section class="card" id="group3">
+          <header><h2>3조</h2><span class="lead">조장: 강산</span></header>
+          <table class="table">
+            <thead><tr><th>이름</th><th>성별</th><th>MBTI</th><th>E/I</th></tr></thead>
+            <tbody>
+              <tr class="row" data-mbti="CUTE"><td>강산</td><td>남</td><td>CUTE</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ENTP"><td>이종화</td><td>남</td><td>ENTP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ESFP"><td>이주은</td><td>여</td><td>ESFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="INTP"><td>배승정</td><td>남</td><td>INTP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="INFP"><td>정용진</td><td>남</td><td>INFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="INFP"><td>김환희</td><td>남</td><td>INFP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ESTP"><td>최지은</td><td>여</td><td>ESTP</td><td class="ei"></td></tr>
+              <tr class="row" data-mbti="ISTP"><td>안나연</td><td>여</td><td>ISTP</td><td class="ei"></td></tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
     </div>
 
-    <footer><p>PNG 저장은 상단 버튼을 누르세요.</p></footer>
+    <footer><p>화면은 가로로, 저장은 자동 세로 합성으로 잘림 없이 저장됩니다.</p></footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   <script>
-    function renderEI(){
-      document.querySelectorAll('.row').forEach(tr=>{
+    // Stamp E/I pills based on MBTI (CUTE -> E)
+    function renderEI(root=document){
+      root.querySelectorAll('.row').forEach(tr=>{
         const mbti=(tr.dataset.mbti||'').toUpperCase();
         const letter = mbti.startsWith('I') ? 'I' : (mbti==='CUTE' ? 'E' : 'E');
         const cell=tr.querySelector('.ei');
@@ -121,14 +121,37 @@
     }
     renderEI();
 
+    // Download: create a hidden vertical clone for export so nothing gets clipped
     document.getElementById('downloadPngBtn').addEventListener('click', async()=>{
-      const node=document.getElementById('board');
-      const canvas=await html2canvas(node,{backgroundColor:'#ffffff',scale:2});
+      const board=document.getElementById('board');
+      const clone=board.cloneNode(true);
+      // vertical stack for export
+      clone.style.display='grid';
+      clone.style.gridTemplateColumns='1fr';
+      clone.style.gap='12px';
+      clone.style.width='1000px'; // tidy fixed width for crisp export
+      clone.id='exportBoard';
+
+      const mount=document.createElement('div');
+      mount.style.position='fixed';
+      mount.style.left='-10000px';
+      mount.style.top='0';
+      mount.style.background='#fff';
+      mount.appendChild(clone);
+      document.body.appendChild(mount);
+
+      // render EI pills inside clone
+      renderEI(mount);
+
+      const canvas = await html2canvas(clone,{backgroundColor:'#ffffff', scale:2, useCORS:true});
       const a=document.createElement('a');
-      const d=new Date();
+      const t=new Date();
       a.href=canvas.toDataURL('image/png');
-      a.download=`생각의바다_친바조_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}.png`;
+      a.download=`생각의바다_친바조_${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}.png`;
       a.click();
+
+      // cleanup
+      document.body.removeChild(mount);
     });
   </script>
 </body>
